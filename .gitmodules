@@ -1,0 +1,6 @@
+[submodule "src/com/collectivecolors/utils"]
+	path = src/com/collectivecolors/utils
+	url = git@github.com:collectivecolors/flex-com.collectivecolors.utils
+[submodule "src/com/collectivecolors/errors"]
+	path = src/com/collectivecolors/errors
+	url = git@github.com:collectivecolors/flex-com.collectivecolors.errors
