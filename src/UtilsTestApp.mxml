@@ -1,21 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ApplicationClass xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="application.*" layout="absolute" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#E2E0FF, #E2E0FF]" width="300" height="300">
-	<mx:VBox x="0" y="0" width="100%" height="100%" verticalGap="5" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
-		<mx:Label width="100%" text="XMLParser Test App" fontSize="20" textAlign="center" color="#403F5A" paddingBottom="0" paddingTop="-2" height="25" fontWeight="bold" fontFamily="Calibri"/>
-		<mx:VBox width="100%" verticalGap="5" backgroundColor="#6F6E9D" borderStyle="solid" cornerRadius="5" borderColor="#FFFFFF" paddingBottom="10" paddingTop="10" paddingLeft="5" paddingRight="5" borderThickness="2">
-			<mx:Label text="Options" fontSize="15" paddingTop="-2" paddingBottom="0" color="#FFFFFF" height="20" width="100%" textAlign="center" fontWeight="bold"/>
-			<mx:VBox width="100%" height="100%" verticalGap="0" borderStyle="solid" borderColor="#FFFFFF" borderThickness="2" cornerRadius="5">
-				<mx:HBox width="100%" horizontalGap="0">
-					<mx:Label text="XML File" fontSize="15" paddingTop="-2" paddingBottom="0" color="#FFFFFF" height="20" textAlign="left" fontWeight="bold" width="100%"/>
-					<mx:Button label="Browse" height="20" width="100" id="btnBrowse"/>
+<ApplicationClass xmlns:mx="http://www.adobe.com/2006/mxml"
+				  xmlns="application.*"
+				  layout="absolute"
+				  backgroundGradientAlphas="[1.0, 1.0]"
+				  backgroundGradientColors="[#E2E0FF, #E2E0FF]"
+				  width="300"
+				  height="450">
+	<mx:VBox x="0"
+			 y="0"
+			 width="100%"
+			 height="100%"
+			 verticalGap="5"
+			 paddingBottom="10"
+			 paddingLeft="10"
+			 paddingRight="10"
+			 paddingTop="10">
+		<mx:Label width="100%"
+				  text="XMLParser Test App"
+				  fontSize="20"
+				  textAlign="center"
+				  color="#403F5A"
+				  paddingBottom="0"
+				  paddingTop="-2"
+				  height="25"
+				  fontWeight="bold"
+				  fontFamily="Calibri"/>
+		<mx:VBox width="100%"
+				 verticalGap="5"
+				 backgroundColor="#6F6E9D"
+				 borderStyle="solid"
+				 cornerRadius="5"
+				 borderColor="#FFFFFF"
+				 paddingBottom="10"
+				 paddingTop="10"
+				 paddingLeft="5"
+				 paddingRight="5"
+				 borderThickness="2" horizontalAlign="center">
+			<mx:Label text="Options"
+					  fontSize="15"
+					  paddingTop="-2"
+					  paddingBottom="0"
+					  color="#FFFFFF"
+					  height="20"
+					  width="100%"
+					  textAlign="center"
+					  fontWeight="bold"/>
+			<mx:VBox width="100%"
+					 height="100%"
+					 verticalGap="0"
+					 borderStyle="solid"
+					 borderColor="#FFFFFF"
+					 borderThickness="2"
+					 cornerRadius="5">
+				<mx:HBox width="100%"
+						 horizontalGap="0">
+					<mx:Label text="XML File"
+							  fontSize="15"
+							  paddingTop="-2"
+							  paddingBottom="0"
+							  color="#FFFFFF"
+							  height="20"
+							  textAlign="left"
+							  fontWeight="bold"
+							  width="100%"/>
+					<mx:Button label="Browse"
+							   height="20"
+							   width="100"
+							   id="btnBrowse"/>
 				</mx:HBox>
-				<mx:TextInput width="100%" backgroundColor="#E2E0FF" id="txtiFile" editable="false"/>
+				<mx:TextInput width="100%"
+							  backgroundColor="#E2E0FF"
+							  id="txtiFile"
+							  editable="false"/>
 			</mx:VBox>
+			<mx:VBox width="100%"
+					 height="100%"
+					 verticalGap="0"
+					 borderStyle="solid"
+					 borderColor="#FFFFFF"
+					 borderThickness="2"
+					 cornerRadius="5">
+				<mx:HBox width="100%"
+						 horizontalGap="0">
+					<mx:Label text="XML Tag"
+							  fontSize="15"
+							  paddingTop="-2"
+							  paddingBottom="0"
+							  color="#FFFFFF"
+							  height="20"
+							  textAlign="left"
+							  fontWeight="bold"
+/>
+				</mx:HBox>
+				<mx:TextInput width="100%"
+							  backgroundColor="#E2E0FF"
+							  id="txtiTag"
+/>
+			</mx:VBox>
+			<mx:VBox width="100%"
+					 height="100%"
+					 verticalGap="0"
+					 borderStyle="solid"
+					 borderColor="#FFFFFF"
+					 borderThickness="2"
+					 cornerRadius="5">
+				<mx:HBox width="100%"
+						 horizontalGap="0">
+					<mx:Label text="XML Parse Mode"
+							  fontSize="15"
+							  paddingTop="-2"
+							  paddingBottom="0"
+							  color="#FFFFFF"
+							  height="20"
+							  textAlign="left"
+							  fontWeight="bold"
+					/>
+				</mx:HBox>
+				<mx:ComboBox width="100%" id="cmboParseOptions"></mx:ComboBox>
+			</mx:VBox>
+			<mx:Button label="Parse XML" id="btnParse" height="20" enabled="false"/>
 		</mx:VBox>
-		<mx:VBox width="100%" height="100%" verticalGap="5" backgroundColor="#6F6E9D" borderStyle="solid" cornerRadius="5" borderColor="#FFFFFF" paddingBottom="10" paddingTop="10" paddingLeft="5" paddingRight="5" borderThickness="2">
-			<mx:Label text="XML" fontSize="15" paddingTop="-2" paddingBottom="0" color="#FFFFFF" height="20" width="100%" textAlign="center" fontWeight="bold"/>
-			<mx:TextArea width="100%" height="100%" id="txtaTest" cornerRadius="5" backgroundColor="#E2E0FF" borderColor="#FFFFFF" borderThickness="2"/>
+		<mx:VBox width="100%"
+				 height="100%"
+				 verticalGap="5"
+				 backgroundColor="#6F6E9D"
+				 borderStyle="solid"
+				 cornerRadius="5"
+				 borderColor="#FFFFFF"
+				 paddingBottom="10"
+				 paddingTop="10"
+				 paddingLeft="5"
+				 paddingRight="5"
+				 borderThickness="2">
+			<mx:Label text="XML"
+					  fontSize="15"
+					  paddingTop="-2"
+					  paddingBottom="0"
+					  color="#FFFFFF"
+					  height="20"
+					  width="100%"
+					  textAlign="center"
+					  fontWeight="bold"/>
+			<mx:List width="100%"
+					 height="100%"
+					 id="lstXmlTags"
+					 allowMultipleSelection="true"
+					 tabEnabled="false"
+					 backgroundColor="#E2E0FF"
+					 cornerRadius="5" borderColor="#FFFFFF" borderThickness="2"/>
 		</mx:VBox>
 	</mx:VBox>
-	
+
 </ApplicationClass>

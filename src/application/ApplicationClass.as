@@ -1,5 +1,6 @@
 package application
 {
+	import com.collectivecolors.errors.XMLParseError;
 	import com.collectivecolors.utils.XMLParser;
 	
 	import flash.events.Event;
@@ -7,11 +8,14 @@ package application
 	import flash.net.FileFilter;
 	import flash.net.FileReference;
 	
+	import mx.controls.Alert;
 	import mx.controls.Button;
-	import mx.controls.TextArea;
+	import mx.controls.ComboBox;
+	import mx.controls.List;
 	import mx.controls.TextInput;
 	import mx.core.Application;
 	import mx.events.FlexEvent;
+	import mx.utils.StringUtil;
 	
 
 
@@ -25,13 +29,24 @@ package application
 
 		public var btnBrowse:Button;
 		public var txtiFile:TextInput;
-		public var txtaTest:TextArea;
+		public var txtiTag:TextInput;
+		public var lstXmlTags:List;
+		public var cmboParseOptions:ComboBox;
+		public var btnParse:Button;
 
 		/**
 		 * Variables
 		 **/
 		 
+		 //Contains the information and data of the XML file once the user selects it
 		 private var fileRef:FileReference;
+		 
+		 //Array containing the XML parser options for the combo box
+		 private var xmlParserOptions:Array = ["Single Tag Required", "Single Tag Optional",
+		 	"Multi Tag Required", "Multi Tag Optional" ];
+		 	
+		 //XML Tag List Data Provider
+		 private var xmlParseReturn:Array = [];
 
 		/**
 		 * Constructor And Creation Complete Handler
@@ -46,14 +61,19 @@ package application
 
 		public function creationCompleteHandler(value:Event):void
 		{
+			//Set cmboParserOption data provider
+			cmboParseOptions.dataProvider = xmlParserOptions;
+			
 			//Create new instance of the file reference class
 			fileRef = new FileReference();
 			
 			//Add event listeners to buttons
 			btnBrowse.addEventListener(MouseEvent.CLICK, btnBrowseHandler);
+			btnParse.addEventListener(MouseEvent.CLICK, btnParseHandler);
 			
 			//Add event listeners to fileRef
-			fileRef.addEventListener(Event.SELECT, fileRefHandler);
+			fileRef.addEventListener(Event.SELECT, fileSelectedHandler);
+			fileRef.addEventListener(Event.COMPLETE, fileLoadedHandler);
 		}
 
 
@@ -61,16 +81,85 @@ package application
 		 * Event Handlers
 		 **/
 
+		//Allow the user to select the xml file to read from his system
 		public function btnBrowseHandler(value:Event):void{
 			fileRef.browse(new Array(new FileFilter("XML Files", "*.xml")));
 		}
 		
-		public function fileRefHandler(value:Event):void{
-			txtiFile.text = value.target.name;
+		//Parse the XML if the user has actually entered a tag to search for
+		public function btnParseHandler(value:Event):void{
+			if(txtiTag.text != ""){
+				parse();
+			}
+		}
+		
+		//Once the user selects a file, go ahead and load the data from that file
+		public function fileSelectedHandler(value:Event):void{
+			//Update the text input with the file's name and size
+			txtiFile.text = value.target.name + " - ( " + value.target.size + " bytes )";
+			//Load the data from the file
+			fileRef.load();
+			
+		}
+		
+		//Once the file's data is loaded, enable the parse XML button
+		public function fileLoadedHandler(value:Event):void{
+			btnParse.enabled = true;
 		}
 
 		/**
 		 * Methods
 		 **/
+		 
+		 //Parse the selected XML file for the selected tag in the selected mode
+		 public function parse():void{
+		 	try{
+		 	switch(cmboParseOptions.selectedItem){
+		 		//Single Tag Required
+		 		case "Single Tag Required":
+		 		{
+					xmlParseReturn=[];
+					xmlParseReturn.push(XMLParser.parseSingleTagRequired(XML(fileRef.data), StringUtil.trim(txtiTag.text), "Not Found", "Invalid"));
+					lstXmlTags.dataProvider = xmlParseReturn;
+					return;
+		 		}
+		 		
+		 		//Single Tag Optional
+		 		case "Single Tag Optional":
+		 		{
+		 			xmlParseReturn=[];
+					xmlParseReturn.push(XMLParser.parseSingleTagOptional(XML(fileRef.data), StringUtil.trim(txtiTag.text), "Invalid"));
+					lstXmlTags.dataProvider = xmlParseReturn;
+					return;
+		 		}
+		 		
+		 		//Multi Tag Required
+		 		case "Multi Tag Required":
+		 		{
+		 			xmlParseReturn=[];
+					xmlParseReturn = XMLParser.parseMultiTagRequired(XML(fileRef.data), StringUtil.trim(txtiTag.text), "Not Found", "Invalid");
+					lstXmlTags.dataProvider = xmlParseReturn;
+					return;
+		 		}
+		 		
+		 		//Multi Tag Optional
+		 		case "Multi Tag Optional":
+		 		{
+		 			xmlParseReturn=[];
+					xmlParseReturn = XMLParser.parseMultiTagOptional(XML(fileRef.data), StringUtil.trim(txtiTag.text), "Invalid");
+					lstXmlTags.dataProvider = xmlParseReturn;
+					return;
+		 		}
+		 	}
+		 	}
+		 	catch(error:XMLParseError){
+		 		if(error.message == "Not Found"){
+		 			Alert.show("The XML Tag \"" + error.xmlTag + "\" Was Not Found", "Nonexistent XML Tag");
+		 		}
+		 		else if(error.message == "Invalid"){
+		 			Alert.show("The XML Tag \"" + error.xmlTag + "\" Is Invalid", "Invalid XML Tag");
+		 		}
+		 	}
+		 }
 	}
 }
