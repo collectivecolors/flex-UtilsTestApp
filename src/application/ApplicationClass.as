@@ -15,7 +15,6 @@ package application
 	import mx.controls.TextInput;
 	import mx.core.Application;
 	import mx.events.FlexEvent;
-	import mx.utils.StringUtil;
 	
 
 
@@ -113,53 +112,83 @@ package application
 		 
 		 //Parse the selected XML file for the selected tag in the selected mode
 		 public function parse():void{
-		 	try{
-		 	switch(cmboParseOptions.selectedItem){
-		 		//Single Tag Required
-		 		case "Single Tag Required":
-		 		{
-					xmlParseReturn=[];
-					xmlParseReturn.push(XMLParser.parseSingleTagRequired(XML(fileRef.data), StringUtil.trim(txtiTag.text), "Not Found", "Invalid"));
-					lstXmlTags.dataProvider = xmlParseReturn;
-					return;
-		 		}
-		 		
-		 		//Single Tag Optional
-		 		case "Single Tag Optional":
-		 		{
-		 			xmlParseReturn=[];
-					xmlParseReturn.push(XMLParser.parseSingleTagOptional(XML(fileRef.data), StringUtil.trim(txtiTag.text), "Invalid"));
-					lstXmlTags.dataProvider = xmlParseReturn;
-					return;
-		 		}
-		 		
-		 		//Multi Tag Required
-		 		case "Multi Tag Required":
-		 		{
-		 			xmlParseReturn=[];
-					xmlParseReturn = XMLParser.parseMultiTagRequired(XML(fileRef.data), StringUtil.trim(txtiTag.text), "Not Found", "Invalid");
-					lstXmlTags.dataProvider = xmlParseReturn;
-					return;
-		 		}
-		 		
-		 		//Multi Tag Optional
-		 		case "Multi Tag Optional":
-		 		{
-		 			xmlParseReturn=[];
-					xmlParseReturn = XMLParser.parseMultiTagOptional(XML(fileRef.data), StringUtil.trim(txtiTag.text), "Invalid");
-					lstXmlTags.dataProvider = xmlParseReturn;
-					return;
-		 		}
-		 	}
-		 	}
-		 	catch(error:XMLParseError){
-		 		if(error.message == "Not Found"){
-		 			Alert.show("The XML Tag \"" + error.xmlTag + "\" Was Not Found", "Nonexistent XML Tag");
-		 		}
-		 		else if(error.message == "Invalid"){
-		 			Alert.show("The XML Tag \"" + error.xmlTag + "\" Is Invalid", "Invalid XML Tag");
-		 		}
-		 	}
+		 	
+		 	//XML data from the selected file
+		 	var data:XML = XML(fileRef.data);
+		 	
+			//Clear the data provider of the list
+			xmlParseReturn=[];
+			
+			//Create two strings, one for the requested tag, and one for the hierarchy
+			var tag:String = txtiTag.text.substring(txtiTag.text.lastIndexOf("/")+1, txtiTag.text.length);
+			var heirarchy:String =  txtiTag.text.substring(0, txtiTag.text.lastIndexOf("/")+1);
+			
+			//Determine how deep the rabbit hole goes
+			var length:int = heirarchy.match(new RegExp( '\/', 'g' )).length;
+			
+			try{
+			//Based on the information above, dig through the XML until we get to the desired point
+			for(var i:int=0 ; i<length ; i++){
+				data = XML(data[heirarchy.substring(0, heirarchy.indexOf("/"))]);
+				heirarchy = heirarchy.substring(heirarchy.indexOf("/")+1 , heirarchy.length);
+			}
+			}
+			//If the user inputs an incorrect XML hiearchy, alert them and return out of the function
+			catch(error:TypeError){
+				Alert.show("The XML Hierarchy Is Invalid", "Invalid XML Hierarchy");
+				return;
+			}
+			
+			try
+			{
+				switch (cmboParseOptions.selectedItem)
+				{
+
+					//Single Tag Required
+					case "Single Tag Required":
+					{
+						xmlParseReturn.push(XMLParser.parseSingleTagRequired(data, tag, "Not Found", "Invalid"));
+						break;
+					}
+
+					//Single Tag Optional
+					case "Single Tag Optional":
+					{
+						xmlParseReturn.push(XMLParser.parseSingleTagOptional(data, tag, "Invalid"));
+						break;
+					}
+
+					//Multi Tag Required
+					case "Multi Tag Required":
+					{
+						xmlParseReturn=XMLParser.parseMultiTagRequired(data, tag, "Not Found", "Invalid");
+						break;
+					}
+
+					//Multi Tag Optional
+					case "Multi Tag Optional":
+					{
+						xmlParseReturn=XMLParser.parseMultiTagOptional(data, tag, "Invalid");
+						break;
+					}
+					
+				}
+				//Set the data provider of the list again to update its contents
+				lstXmlTags.dataProvider=xmlParseReturn;
+			}
+			catch (error:XMLParseError)
+			{
+				//If the library throws an XML Not Found error, alert the user
+				if (error.message == "Not Found")
+				{
+					Alert.show("The XML Tag \"" + error.xmlTag + "\" Was Not Found", "Nonexistent XML Tag");
+				}
+				//If the library throws an XML Invalid error, alert the user
+				else if (error.message == "Invalid")
+				{
+					Alert.show("The XML Tag \"" + error.xmlTag + "\" Is Invalid", "Invalid XML Tag");
+				}
+			}
 		 }
 	}
 }
