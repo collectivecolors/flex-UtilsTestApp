@@ -95,7 +95,9 @@
 				<mx:TextInput width="100%"
 							  backgroundColor="#E2E0FF"
 							  id="txtiTag"
-/>
+>
+					<mx:toolTip>Enter XML Search String. Use &quot;/&quot; to indicate hierarchy. ex. first/second/last</mx:toolTip>
+				</mx:TextInput>
 			</mx:VBox>
 			<mx:VBox width="100%"
 					 height="100%"

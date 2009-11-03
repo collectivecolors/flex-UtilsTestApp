@@ -119,6 +119,9 @@ package application
 			//Clear the data provider of the list
 			xmlParseReturn=[];
 			
+			//Remove Any Blank Spaces
+			txtiTag.text = txtiTag.text.replace(new RegExp( ' ', 'g' ), "");
+			
 			//Create two strings, one for the requested tag, and one for the hierarchy
 			var tag:String = txtiTag.text.substring(txtiTag.text.lastIndexOf("/")+1, txtiTag.text.length);
 			var heirarchy:String =  txtiTag.text.substring(0, txtiTag.text.lastIndexOf("/")+1);
@@ -173,6 +176,7 @@ package application
 					}
 					
 				}
+				
 				//Set the data provider of the list again to update its contents
 				lstXmlTags.dataProvider=xmlParseReturn;
 			}
